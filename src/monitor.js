@@ -98,12 +98,7 @@ async function sendNtfyNotification(proposals) {
       `🎉 PLACES DISPONIBLES SNCF !\n\n` +
       `Trouvé ${proposals.length} proposition(s) avec des places disponibles.\n\n` +
       proposals
-        .map(
-          (p) =>
-            `🚂 ${p.orig} → ${p.dest}\n` +
-            `⏰ ${p.dep}\n` +
-            `🎫 ${p.count} place(s) disponible(s)\n`
-        )
+        .map((p) => `🎫 ${p.count} place(s) disponible(s)\n`)
         .join("\n") +
       `\n🔔 Notification ${notificationCount + 1}/${MAX_NOTIFICATIONS}`;
 
