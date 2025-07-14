@@ -175,7 +175,6 @@ async function checkSNCFAvailability() {
       headers: headers,
       timeout: 30000, // 30 secondes de timeout
     });
-    console.log("🚀 ~ checkSNCFAvailability ~ response:", response.data);
 
     logger.info("Réponse reçue de l'API SNCF", {
       status: response.status,
@@ -258,7 +257,7 @@ async function startMonitoring() {
     logger.info("Notification de démarrage envoyée");
   } catch (error) {
     logger.error("Erreur lors de l'envoi de la notification de démarrage", {
-      message: error.message,
+      message: JSON.stringify(error),
     });
   }
 
