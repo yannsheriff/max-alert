@@ -190,3 +190,19 @@ npm install --save-dev nodemon
 ## 📝 Licence
 
 ISC License
+
+## ⚙️ Configuration de la date de recherche
+
+La date de recherche de billet est maintenant paramétrable dans le fichier `config.json` à la racine du projet.
+
+Exemple de contenu du fichier :
+
+```json
+{
+  "departureDateTime": "2025-07-14T00:00:00.000Z"
+}
+```
+
+- **Format** : La date doit être au format ISO (ex : `2025-07-14T00:00:00.000Z`)
+- **Pour changer la date** : Modifiez simplement la valeur dans `config.json` puis relancez le script.
+- **Si le fichier n'existe pas ou la clé est absente** : Le script utilisera la date par défaut `2025-07-14T00:00:00.000Z`.

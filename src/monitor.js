@@ -36,12 +36,23 @@ if (!fs.existsSync(logsDir)) {
 }
 
 // Configuration de la requête SNCF
+const configPath = path.join(__dirname, "..", "config.json");
+let config = {};
+try {
+  config = JSON.parse(fs.readFileSync(configPath, "utf-8"));
+} catch (e) {
+  logger.warn(
+    "Impossible de lire config.json, utilisation de la date par défaut"
+  );
+}
+const DEPARTURE_DATE = config.departureDateTime || "2025-07-14T00:00:00.000Z";
+
 const SNCF_CONFIG = {
   url: "https://www.maxjeune-tgvinoui.sncf/api/public/refdata/search-freeplaces-proposals",
   params: {
     destination: "FRPLY",
     origin: "FRLPD",
-    departureDateTime: "2025-07-14T00:00:00.000Z",
+    departureDateTime: DEPARTURE_DATE,
   },
   headers: {
     accept: "application/json",
@@ -89,9 +100,9 @@ async function sendNtfyNotification(proposals) {
       proposals
         .map(
           (p) =>
-            `🚂 ${p.origin} → ${p.destination}\n` +
-            `⏰ ${p.departureTime}\n` +
-            `🎫 ${p.availablePlaces} place(s) disponible(s)\n`
+            `🚂 ${p.orig} → ${p.dest}\n` +
+            `⏰ ${p.dep}\n` +
+            `🎫 ${p.count} place(s) disponible(s)\n`
         )
         .join("\n") +
       `\n🔔 Notification ${notificationCount + 1}/${MAX_NOTIFICATIONS}`;
@@ -164,6 +175,7 @@ async function checkSNCFAvailability() {
       headers: headers,
       timeout: 30000, // 30 secondes de timeout
     });
+    console.log("🚀 ~ checkSNCFAvailability ~ response:", response.data);
 
     logger.info("Réponse reçue de l'API SNCF", {
       status: response.status,
@@ -174,17 +186,17 @@ async function checkSNCFAvailability() {
     // Analyser la réponse pour détecter des places disponibles
     if (response.data && response.data.proposals) {
       const availableProposals = response.data.proposals.filter(
-        (proposal) => proposal.availablePlaces && proposal.availablePlaces > 0
+        (proposal) => proposal.count && proposal.count > 0
       );
 
-      if (availableProposals.length > 0) {
+      if (response.data.proposals.length > 0) {
         logger.warn("🎉 PLACES DISPONIBLES DÉTECTÉES !", {
           count: availableProposals.length,
           proposals: availableProposals.map((p) => ({
-            origin: p.origin,
-            destination: p.destination,
-            departureTime: p.departureTime,
-            availablePlaces: p.availablePlaces,
+            origin: p.dep,
+            destination: p.arr,
+            departureTime: p.dep,
+            availablePlaces: p.count,
           })),
         });
 
