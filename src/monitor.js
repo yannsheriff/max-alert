@@ -95,12 +95,9 @@ const SNCF_CONFIG = {
 async function sendNtfyNotification(proposals) {
   try {
     const message =
-      `🎉 PLACES DISPONIBLES SNCF !\n\n` +
       `Trouvé ${proposals.length} proposition(s) avec des places disponibles.\n\n` +
-      proposals
-        .map((p) => `🎫 ${p.count} place(s) disponible(s)\n`)
-        .join("\n") +
-      `\n🔔 Notification ${notificationCount + 1}/${MAX_NOTIFICATIONS}`;
+      proposals.map((p) => `${p.count} place(s) disponible(s)\n`).join("\n") +
+      `\nNotification :  ${notificationCount + 1}/${MAX_NOTIFICATIONS}`;
 
     await axios.post(
       "https://ntfy.sh/yannsheriff_sncf_max_notifcations_plus",
@@ -171,11 +168,11 @@ async function checkSNCFAvailability() {
       timeout: 30000, // 30 secondes de timeout
     });
 
-    logger.info("Réponse reçue de l'API SNCF", {
-      status: response.status,
-      dataLength: JSON.stringify(response.data).length,
-      timestamp: new Date().toISOString(),
-    });
+    // logger.info("Réponse reçue de l'API SNCF", {
+    //   status: response.status,
+    //   dataLength: JSON.stringify(response.data).length,
+    //   timestamp: new Date().toISOString(),
+    // });
 
     // Analyser la réponse pour détecter des places disponibles
     if (response.data && response.data.proposals) {
